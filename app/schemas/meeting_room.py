@@ -24,3 +24,12 @@ class MeetingRoomDB(MeetingRoomCreate):
 
     class Config:
         orm_mode = True
+
+
+class MeetingRoomUpdate(MeetingRoomBase):
+
+    @field_validator('name')
+    def name_cannot_be_null(cls, value):
+        if value is None:
+            raise ValueError('Имя переговорки не может быть пустым!')
+        return value
