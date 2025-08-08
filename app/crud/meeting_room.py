@@ -30,6 +30,6 @@ class CRUDMeetingRoom(CRUDBase):
 
 
 # Объект crud наследуем уже не от CRUDBase,
-# а от только что созданного класса CRUDMeetingRoom. 
+# а от только что созданного класса CRUDMeetingRoom.
 # Для инициализации передаем модель, как и в CRUDBase.
 meeting_room_crud = CRUDMeetingRoom(MeetingRoom)

@@ -11,10 +11,7 @@ from app.schemas.meeting_room import (
 )
 
 
-router = APIRouter(
-    prefix='/meeting_rooms',
-    tags=['Meeting Rooms']
-    )
+router = APIRouter()
 
 
 @router.post(
