@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from pydantic import BaseModel, field_validator, model_validator
 
@@ -7,26 +7,30 @@ class ReservationBase(BaseModel):
     from_reserve: datetime
     to_reserve: datetime
 
+    model_config = {
+        'extra': 'forbid'
+    }
+
 
 class ReservationUpdate(ReservationBase):
 
     @field_validator('from_reserve')
     def check_from_reserve_later_than_now(cls, value):
-        if value <= datetime.now():
+        if value <= datetime.now(timezone.utc):
             raise ValueError(
                 'Время начала бронирования '
                 'не может быть меньше текущего времени'
             )
         return value
 
-    @model_validator(skip_on_failure=True)
-    def check_from_reserve_before_to_reserve(cls, values):
-        if values['from_reserve'] >= values['to_reserve']:
+    @model_validator(mode='after')
+    def check_from_reserve_before_to_reserve(self):
+        if self.from_reserve >= self.to_reserve:
             raise ValueError(
                 'Время начала бронирования '
                 'не может быть больше времени окончания'
             )
-        return values
+        return self
 
 
 class ReservationCreate(ReservationUpdate):

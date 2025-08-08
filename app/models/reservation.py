@@ -13,4 +13,3 @@ class Reservation(Base):
         return (
             f'Уже забронировано с {self.from_reserve} по {self.to_reserve}'
         )
-
