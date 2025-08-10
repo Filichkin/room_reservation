@@ -18,8 +18,15 @@ router.include_router(
     prefix='/auth',
     tags=['auth'],
 )
+# Сохраняем роутер в переменную.
+users_router = fastapi_users.get_users_router(UserRead, UserUpdate)
+# Из списка эндпоинтов роутера исключаем ненужную ручку.
+users_router.routes = [
+    rout for rout in users_router.routes if rout.name != 'users:delete_user'
+]
+# Подключаем изменённый роутер по старому адресу.
 router.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),
+    users_router,
     prefix='/users',
     tags=['users'],
 )
