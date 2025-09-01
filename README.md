@@ -10,6 +10,7 @@
 - **SQLAlchemy** 2.x (async) + **SQLite** (aiosqlite)
 - **FastAPI Users** 14.x (JWT аутентификация)
 - **Alembic** (миграции)
+- **aiogoogle** (Google Sheets API интеграция)
 
 ## Структура проекта
 ```
@@ -34,6 +35,8 @@ app/
     meeting_room.py
     reservation.py
     user.py
+  services/
+    google_api.py     # интеграция с Google Sheets API
 alembic/              # миграции
 ```
 > Структура соответствует скриншоту из репозитория.
@@ -131,6 +134,18 @@ Authorization: Bearer <JWT>
   "from_reserve": "2025-08-12T09:00:00Z",
   "to_reserve":   "2025-08-12T10:00:00Z",
 }
+```
+
+### Google Sheets Integration
+Интеграция с Google Sheets API для создания отчётов о бронированиях:
+- `POST /google/report` — создание отчёта в Google Sheets с количеством бронирований по переговорным комнатам
+- Автоматическое создание таблицы с правами доступа для указанного email
+- Формирование отчёта с датой создания и статистикой по комнатам
+
+**Пример:**
+```http
+POST /google/report
+Authorization: Bearer <JWT>
 ```
 
 ## Настройки (pydantic-settings v2)
