@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import and_, select
+from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -73,6 +73,27 @@ class CRUDReservation(CRUDBase):
             )
         )
         return reservations.scalars().all()
+
+    async def get_count_res_at_the_same_time(
+            self,
+            from_reserve: datetime,
+            to_reserve: datetime,
+            session: AsyncSession,
+    ) -> list[dict[str, int]]:
+        reservations = await session.execute(
+            # Получаем количество бронирований переговорок за период
+            select([Reservation.meetingroom_id,
+                    func.count(Reservation.meetingroom_id)]).where(
+                Reservation.from_reserve >= from_reserve,
+                Reservation.to_reserve <= to_reserve
+            ).group_by(Reservation.meetingroom_id)
+        )
+        reservations = reservations.all()
+        res = [
+            {"meetingroom_id": room_id, "count": count}
+            for room_id, count in reservations
+        ]
+        return res
 
 
 reservation_crud = CRUDReservation(Reservation)
